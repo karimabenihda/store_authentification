@@ -1,29 +1,21 @@
-import React from 'react'
-import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import usersData from '../users/users.json'; 
 
-export const fetchUsers = createAsyncThunk(
-    'auth/fetchUsers',
-    async (_, thunkAPI) => {
-      try {
-        const response = await axios.get('http://localhost:8000/users');
-        return response.data; 
-      } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
-      }
-    }
-  );
 
-const authSlice=createSlice ({
-    name: 'auth',
-    initialState: {
+export const fetchUsers = createAsyncThunk('auth/fetchUsers', async () => {
+  return usersData; 
+});
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: {
     user: null,
     role: null,
     users: [],
     loading: false,
     error: null,
-},
-reducers: {
+  },
+  reducers: {
     login: (state, action) => {
       const { username, password } = action.payload;
       const foundUser = state.users.find(
@@ -32,7 +24,8 @@ reducers: {
 
       if (foundUser) {
         state.user = foundUser;
-        state.role = foundUser.role; 
+        state.role = foundUser.role;
+        state.error = null; 
       } else {
         state.error = 'Invalid username or password';
       }
@@ -50,18 +43,14 @@ reducers: {
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload.users;
+        state.users = action.payload.users; 
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch users';
+        state.error = action.error.message || 'Failed to fetch users';
       });
   }
 });
-
-
-
-
 
 export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;
