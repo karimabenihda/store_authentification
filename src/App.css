@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+
+  font-family: 'Montserrat', sans-serif;}
+
+  #price{
+    color: rgb(33, 30, 30);
+    font-family: 'Montserrat', sans-serif;
+  }
+  .card-text{
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.5;
+  }
+.App {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.message{
+  text-align: center;
+}
+.sidebar {
+  width: 190px;
+  border-right: 1px solid rgb(107, 103, 103);
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #f8f9fa;
+  flex-shrink: 0; 
+  position: sticky;
+  top: 0; 
+  height: 100vh; 
+  line-height: 30px;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #ffffff;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
