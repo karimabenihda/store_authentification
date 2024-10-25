@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts, addProduct, updateProduct, deleteProduct} from '../reducers/productSlice';
+import { fetchProducts, addProduct, updateProduct, deleteProduct } from '../reducers/productSlice';
+import { addToCart } from '../reducers/cartSlice';
+import { authenticateUser, logoutUser } from '../reducers/authSlice';
 import '../App.css';
-import {addToCart }from '../reducers/cartSlice';
+
 function ProductList() {
     const dispatch = useDispatch();
-    const products = useSelector((state) => state.products.items);
-    const user = useSelector((state) => state.user); // Assuming the user state contains authentication info
-    const [authenticated, setAuthenticated] = useState(false); // Track whether the user is authenticated
+    const { items: products } = useSelector((state) => state.products);
+    const { isAuthenticated, user, error } = useSelector((state) => state.auth);
     const [formVisible, setFormVisible] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [formData, setFormData] = useState({
@@ -19,10 +20,10 @@ function ProductList() {
     });
 
     useEffect(() => {
-        if (authenticated) {
-            dispatch(fetchProducts()); // Fetch products only if authenticated
+        if (isAuthenticated) {
+            dispatch(fetchProducts());
         }
-    }, [dispatch, authenticated]);
+    }, [dispatch, isAuthenticated]);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -31,19 +32,25 @@ function ProductList() {
         } else {
             dispatch(addProduct(formData));
         }
+        resetForm();
+    };
+
+    const resetForm = () => {
         setFormData({ title: '', description: '', price: '', category: '', images: [''] });
         setFormVisible(false);
         setSelectedProduct(null);
     };
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevData) => ({ ...prevData, [name]: value }));
+    };
+
     const handleLogin = (e) => {
         e.preventDefault();
-        // Simple example for authentication, replace this with actual authentication logic
-        if (e.target.username.value === "admin" && e.target.password.value === "password") {
-            setAuthenticated(true); // If correct credentials, authenticate user
-        } else {
-            alert("Invalid credentials");
-        }
+        const username = e.target.username.value;
+        const password = e.target.password.value;
+        dispatch(authenticateUser({ username, password }));
     };
 
     // Authentication form
@@ -54,6 +61,7 @@ function ProductList() {
                 <input type="text" name="username" placeholder="Username" required />
                 <input type="password" name="password" placeholder="Password" required />
                 <button type="submit">Login</button>
+                {error && <p>{error}</p>}
             </form>
         </div>
     );
@@ -62,6 +70,7 @@ function ProductList() {
     const renderProductList = () => (
         <div>
             <h2>Products</h2>
+            <button onClick={() => setFormVisible(true)}>Add New Product</button>
             <div className="card-container">
                 {products.length > 0 ? (
                     products.map((product) => (
@@ -72,9 +81,13 @@ function ProductList() {
                                 <p className="card-text">{product.description}</p>
                                 <p className="card-text">${product.price}</p>
                                 <button onClick={() => dispatch(addToCart(product))} className="btn btn-primary">Add to Cart</button>
-                                {user.role === 'admin' && (
+                                {user?.role === 'admin' && (
                                     <>
-                                        <button className="btn btn-secondary" onClick={() => handleProductUpdate(product)}>Update</button>
+                                        <button className="btn btn-secondary" onClick={() => {
+                                            setSelectedProduct(product);
+                                            setFormVisible(true);
+                                            setFormData(product);
+                                        }}>Update</button>
                                         <button className="btn btn-danger" onClick={() => dispatch(deleteProduct(product.id))}>Delete</button>
                                     </>
                                 )}
@@ -89,24 +102,19 @@ function ProductList() {
             {formVisible && (
                 <form onSubmit={handleFormSubmit}>
                     <h3>{selectedProduct ? 'Update Product' : 'Add Product'}</h3>
-                    <input type="text" name="title" placeholder="Product Title" value={formData.title} onChange={(e) => handleChange(e)} required />
-                    <input type="text" name="description" placeholder="Product Description" value={formData.description} onChange={(e) => handleChange(e)} required />
-                    <input type="number" name="price" placeholder="Product Price" value={formData.price} onChange={(e) => handleChange(e)} required />
-                    <input type="text" name="category" placeholder="Product Category" value={formData.category} onChange={(e) => handleChange(e)} required />
-                    <input type="text" name="images" placeholder="Product Image URL" value={formData.images[0]} onChange={(e) => handleChange(e)} required />
+                    <input type="text" name="title" placeholder="Product Title" value={formData.title} onChange={handleChange} required />
+                    <input type="text" name="description" placeholder="Product Description" value={formData.description} onChange={handleChange} required />
+                    <input type="number" name="price" placeholder="Product Price" value={formData.price} onChange={handleChange} required />
+                    <input type="text" name="category" placeholder="Product Category" value={formData.category} onChange={handleChange} required />
+                    <input type="text" name="images" placeholder="Product Image URL" value={formData.images[0]} onChange={handleChange} required />
                     <button type="submit">{selectedProduct ? 'Update Product' : 'Add Product'}</button>
-                    <button type="button" onClick={() => setFormVisible(false)}>Cancel</button>
+                    <button type="button" onClick={resetForm}>Cancel</button>
                 </form>
             )}
         </div>
     );
 
-    // Main render
-    return (
-        <div>
-            {!authenticated ? renderAuthForm() : renderProductList()}
-        </div>
-    );
+    return <div>{!isAuthenticated ? renderAuthForm() : renderProductList()}</div>;
 }
 
 export default ProductList;
