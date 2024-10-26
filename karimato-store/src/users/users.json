@@ -1,0 +1,32 @@
+{
+  "users": [
+      {
+          "username": "user1",
+          "password": "password123",
+          "role": "user",
+          "items": ["itemA", "itemB", "itemC"],
+          "orders": []
+      },
+      {
+          "username": "user2",
+          "password": "password456",
+          "role": "user",
+          "items": ["itemD", "itemE"],
+          "orders": []
+      },
+      {
+          "username": "user3",
+          "password": "password789",
+          "role": "user",
+          "items": ["itemF", "itemG", "itemH", "itemI"],
+          "orders": []
+      },
+      {
+          "username": "admin",
+          "password": "admin123",
+          "role": "admin",
+          "items": ["itemX", "itemY", "itemZ"],
+          "orders": []
+      }
+  ]
+}
