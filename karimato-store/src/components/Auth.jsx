@@ -15,7 +15,7 @@ function Auth() {
         console.log("Attempting login with:", { username, password });
         dispatch(authenticateUser({ username, password }));
     };
-    
+     
 
     const handleLogout = () => {
         console.log("Logging out"); 
