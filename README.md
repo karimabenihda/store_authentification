@@ -52,13 +52,13 @@ KIL Shopping Cart is a full-featured e-commerce web application built with React
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/karimabenihda/kil-shopping-cart.git
+    git clone https://github.com/karimabenihda/store_authentification.git
     ```
 
 2. Navigate into the project directory:
 
     ```bash
-    cd kil-shopping-cart
+    cd store_authentification
     ```
 
 3. Install dependencies for both frontend and backend:
