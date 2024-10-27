@@ -2,7 +2,7 @@
 
 # KIL Shopping Cart
 
-KIL Shopping Cart is a full-featured e-commerce web application built with React, Redux, and Redux Toolkit. It allows users to browse items, manage their shopping cart, and complete purchases via a checkout system. The application includes user authentication, role-based access control, and persistent cart management.
+KIL Shopping Cart is a  full-featured e-commerce web application built with React, Redux, and Redux Toolkit. It allows users to browse items, manage their shopping cart, and complete purchases via a checkout system. The application includes user authentication, role-based access control, and persistent cart management.
 
 ## Table of Contents
 
